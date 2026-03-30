@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import KakaoPayQRModal from '../components/KakaoPayQRModal';
 import Toast from '../components/Toast';
 import { useOffering } from '../context/OfferingContext';
-import { openKakaoPay, openNaverPay, openToss } from '../utils/deeplinks';
+import { openNaverPay, openToss } from '../utils/deeplinks';
 import { formatCurrencyText, maskAccountNumber } from '../utils/format';
 
 const bankName = import.meta.env.VITE_BANK_NAME || '';
@@ -17,6 +18,7 @@ export default function SelectPayment() {
   const { amount, offeringType } = useOffering();
   const [toastMessage, setToastMessage] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [showKakaoQR, setShowKakaoQR] = useState(false);
 
   useEffect(() => {
     if (!toastMessage) {
@@ -45,16 +47,12 @@ export default function SelectPayment() {
   };
 
   const handleExternalPay = async (appType) => {
-    await copyText(accountNumber);
-
     if (appType === 'kakao') {
-      showToast('계좌번호가 복사되었습니다. 카카오페이에서 붙여넣기 해주세요');
-      window.setTimeout(() => {
-        openKakaoPay();
-      }, 1000);
+      setShowKakaoQR(true);
       return;
     }
 
+    await copyText(accountNumber);
     showToast('계좌번호가 복사되었습니다. 네이버페이에서 붙여넣기 해주세요');
     window.setTimeout(() => {
       openNaverPay();
@@ -141,6 +139,7 @@ export default function SelectPayment() {
         </div>
       </section>
       <Toast message={toastMessage} visible={isToastVisible} />
+      {showKakaoQR && <KakaoPayQRModal onClose={() => setShowKakaoQR(false)} />}
     </main>
   );
 }
