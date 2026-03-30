@@ -1,0 +1,15 @@
+# 시스템 파일
+.DS_Store
+Thumbs.db
+
+# 의존성 (npm install로 재설치 가능)
+node_modules
+
+# 빌드 결과물 (배포 시 자동 생성)
+dist
+
+# 환경변수 (계좌번호, 은행 정보 - 절대 올리면 안됨!)
+.env
+
+# 배포 관련
+.vercel
